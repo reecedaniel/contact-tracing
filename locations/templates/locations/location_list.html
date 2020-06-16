@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+      .footer-hover {
+        background-color: #2BBBAD;
+        -webkit-transition: all .3s ease-in-out;
+        transition: all .3s ease-in-out;
+
+      }
+
+      .footer-hover:hover {
+        background-color: #00695c;
+      }
+
+      .text-black-40 {
+        color: rgba(0, 0, 0, 0.4)
+      }
+
+      .card-footer {
+      padding: 0rem;
+      }
+</style>
+
+<div class="jumbotron rounded-lg" style="margin-top: 1rem">
+  <h2 class="display-4">Welcome {{user.username}}!</h2>
+  <p class="lead">Manage your account</p>
+  <hr class="my-4">
+  <!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> -->
+  <a class="btn btn-primary btn-lg" href="{% url 'locations:create' %}" role="button">Add Location</a>
+</div>
+<h2><i class="fas fa-map-marker-alt"></i> Your Locations</h2>
+{% if request.user.is_authenticated %}
+
+
+<div class="container">
+  <div class="row">
+
+
+
+      {% for local in request.user.location_set.all %}
+      <!-- Card content -->
+      <div class="col-md-4" style="margin-top:5px">
+
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+              <!-- Title -->
+              <h4 class="card-title">{{local.name}}</h4>
+              <!-- Text -->
+              <p class="card-text">{{local.address}}</p>
+
+              <!-- Button -->
+              <!-- <a href="{% url 'tracing:visit' pk=local.pk %}" class="btn btn-primary btn-sm col-md-6">Go to Location</a> -->
+              <!-- Button -->
+
+            <!-- Footer -->
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center" >
+              <div class="col-sm-6 footer-hover align-items-center"style="padding:0.75rem; border-radius: 0 0 0 0.25rem">
+                <a href="{% url 'tracing:visit' pk=local.pk %}" class="small white-text">Open App<i class="fas fa-arrow-circle-right pl-2"></i></a>
+              </div>
+              <div class="col-sm-6 footer-hover align-items-center"style="padding:0.75rem; border-radius: 0 0 0.25rem">
+                <a href="{% url 'locations:detail' pk=local.pk %}" class="small white-text">Manage Location<i class="fas fa-arrow-circle-right pl-2"></i></a>
+              </div>
+
+
+
+
+
+            <!-- <i href="{% url 'locations:detail' pk=local.pk %}" class="far fa-edit fa-lg teal-text"></i> -->
+            </div>
+        </div>
+      </div>
+      {% empty %}
+      <p>Sorry, no locations in this list.</p>
+      {% endfor %}
+    </div>
+</div>
+
+
+
+{% endif %}
+
+
+{% endblock %}

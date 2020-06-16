@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container" style="margin-top:10px">
+      <h1>Visits</h1>
+      <h2 class="text-center">Welcome to {{location}}</h2>
+</div>
+
+
+      <div class="container" id="div_form">
+        <form method='POST' id="access-form">
+          {% csrf_token %}
+          <div id="cell_form">
+            {{form_cell.as_p}}
+          </div>
+          <div class="alert alert-success" role="alert" id="success-alert">
+            <span id="welcome"></span>
+          </div>
+          <div id="name_form">
+            {{form_visitor.as_p}}
+          </div>
+          <input type="submit" class="btn btn-primary btn-lg btn-block" value="Log Visit" id="confirm" />
+        </form>
+
+
+      </div>
+
+      <div style="background-color:#BADFE7; padding:5px; border-radius:5px;margin:10px">
+      <p><b>Why log your visit?</b><br>
+          By logging your visit you are helping in the fight against the COVID-19 by aiding the process of identification of persons who may have come into contact with an infected person.
+      </p>
+      </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+    <!-- Optional JavaScript -->
+    <script type="text/javascript" >
+      var counter=0;
+      $("#success-alert").hide();
+      $("#access-form").submit(function (e) {
+          // preventing from page reload and default actions
+          e.preventDefault();
+          $("#success-alert").slideUp(500);
+          var cellphone = $("#id_cellphone").val();
+          var name = $("#id_name").val();
+          var location = $("#id_location").val()
+
+          // make POST ajax call
+          $.ajax({
+              type: 'POST',
+              url: "{% url 'tracing:post_visitor' %}",
+              data: {
+                cellphone:cellphone,
+                name:name,
+                location:location,
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                dataType: "json",
+              },
+              success: function (response) {
+                  // 1. clear the form.
+                  // console.log("Created")
+                  $("#access-form").trigger('reset');
+                  console.log('form submitted')
+                  // 2. focus to nickname input
+                  counter=0
+              },
+              error : function(xhr,errmsg,err) {
+                      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+          })
+      })
+
+
+      /*
+       On focus out on input nickname,
+       call AJAX get request to check if the nickName
+       already exists or not.
+       */
+
+
+       $("#id_cellphone").keyup(function (e) {
+           e.preventDefault();
+           // get the nickname
+           console.log("triggered")
+           var cellphone = $(this).val();
+           // GET AJAX request
+           $.ajax({
+               type: 'GET',
+               url: "{% url 'tracing:check_cell' %}",
+               data: {"cellphone": cellphone},
+               success: function (response) {
+                   // if not valid user, alert the user
+                   if(!response["valid"]){
+                       // alert("You cannot create a friend with same nick name");
+                       // var nickName = $("#id_nick_name");
+                       // nickName.val("")
+                       // nickName.focus()
+                       //$("#name_form").hide()
+                       $("#id_name").val(response["name"])
+                       if(counter<=0){
+                         $("#success-alert").show()
+                         $("#welcome" ).text( "Welcome back " + response["name"] );
+                         // $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+                         //    // $( "span" ).text( "" + value );
+                         //    // $("#success-alert").slideUp(500);
+                         //    });
+                         // $("#cell_form").append(
+                         //   '<div style="background-color:#BADFE7; padding:5px; border-radius:5px;">'+
+                         //   '<p> Welcome Back '+ response["name"] +'</p></div>')
+
+                          counter++
+                        }
+                       //alert("Welcome Back!");
+                   }
+               },
+               error: function (response) {
+                   console.log(response)
+               }
+           })
+        })
+
+
+
+    </script>
+{% endblock %}
