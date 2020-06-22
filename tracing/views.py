@@ -27,6 +27,12 @@ class VisitorListView(ListView,LoginRequiredMixin):
     def get_queryset(self):
         return Visitor.objects.order_by('name')
 
+class VisitListView(ListView,LoginRequiredMixin):
+    paginate_by = 2
+    context_object_name = 'visit_list'
+    queryset = Visit.objects.order_by('-timestamp')
+    template_name='visit_list.html'
+
 def postVisitor(request):
     # request should be ajax and method should be POST.
     form_cell = VisitForm()
@@ -38,13 +44,23 @@ def postVisitor(request):
         name = request.POST.get('name')
         location_id = request.POST.get('location')
         location = Location.objects.get(pk=location_id)
+        temperature =request.POST.get('location')
+        dry_cough = request.POST.get('location')
+        breathing = request.POST.get('location')
+        flu = request.POST.get('location'),
+        other_contact = request.POST.get('location')
         # save the data and after fetch the object in instance
         if cellphone:
             #check if exists in database
             print(cellphone)
             if Visitor.objects.filter(cellphone=cellphone).exists():
                 visitor = Visitor.objects.get(cellphone=cellphone)
-                access_record= visitor.visit_set.create(location=location)
+                access_record= visitor.visit_set.create(location=location,
+                                                        temperature=temperature,
+                                                        dry_cough=dry_cough,
+                                                        breathing= breathing,
+                                                        flu= flu,
+                                                        other_contact= other_contact)
                 response_data['name'] = access_record.cellphone.name
                 # ser_instance = serializers.serialize('json', [ instance, ])
                 return JsonResponse(response_data)
@@ -53,7 +69,12 @@ def postVisitor(request):
                 new_visitor=Visitor.objects.get_or_create(name=name,cellphone=cellphone)[0]
                 new_visitor.save()
                 print(new_visitor)
-                access_record=new_visitor.visit_set.create(location=location)
+                access_record=new_visitor.visit_set.create(location=location,
+                                                            temperature=temperature,
+                                                            dry_cough=dry_cough,
+                                                            breathing= breathing,
+                                                            flu= flu,
+                                                            other_contact= other_contact)
                 print(access_record)
                 response_data['name']=name
                 # instance = new_visitor.name
@@ -86,6 +107,12 @@ def checkCell(request):
             return JsonResponse({"valid":True}, status = 200)
 
     return JsonResponse({}, status = 400)
+
+def Dashboard(request):
+    return render(request,'dashboard.html')
+
+def Tables(request):
+    return render(request,'tables.html')
 
 
 

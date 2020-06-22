@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+  .alert{
+  display:none;
+}
+
+</style>
+
   <div class="container" style="margin-top:10px">
       <h1>Visits</h1>
       <h2 class="text-center">Welcome to {{location}}</h2>
@@ -13,7 +20,7 @@
           <div id="cell_form">
             {{form_cell.as_p}}
           </div>
-          <div class="alert alert-success" role="alert" id="success-alert">
+          <div class="alert alert-success" role="alert" id="success-alert" aria-hidden="true">
             <span id="welcome"></span>
           </div>
           <div id="name_form">
@@ -40,7 +47,7 @@
     <!-- Optional JavaScript -->
     <script type="text/javascript" >
       var counter=0;
-      $("#success-alert").hide();
+      // $("#success-alert").hide();
       $("#access-form").submit(function (e) {
           // preventing from page reload and default actions
           e.preventDefault();
@@ -48,6 +55,11 @@
           var cellphone = $("#id_cellphone").val();
           var name = $("#id_name").val();
           var location = $("#id_location").val()
+          var temperature = $("#id_temperature").val()
+          var dry_cough = $("#id_dry_cough").val()
+          var breathing = $("#id_breathing").val()
+          var flu=$("#id_flu").val()
+          var other_contact=$("#id_other_contact").val()
 
           // make POST ajax call
           $.ajax({
@@ -57,6 +69,11 @@
                 cellphone:cellphone,
                 name:name,
                 location:location,
+                temperature:temperature,
+                dry_cough:dry_cough,
+                breathing: breathing,
+                flu: flu,
+                other_contact: other_contact,
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 dataType: "json",
               },
@@ -101,9 +118,9 @@
                        // nickName.focus()
                        //$("#name_form").hide()
                        $("#id_name").val(response["name"])
-                       if(counter<=0){
+                       // if(counter<=0){
                          $("#success-alert").show()
-                         $("#welcome" ).text( "Welcome back " + response["name"] );
+                         $("#welcome" ).text("Welcome back " + response["name"]+" "+"😃" );
                          // $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
                          //    // $( "span" ).text( "" + value );
                          //    // $("#success-alert").slideUp(500);
@@ -112,8 +129,8 @@
                          //   '<div style="background-color:#BADFE7; padding:5px; border-radius:5px;">'+
                          //   '<p> Welcome Back '+ response["name"] +'</p></div>')
 
-                          counter++
-                        }
+                          // counter++
+                        // }
                        //alert("Welcome Back!");
                    }
                },
