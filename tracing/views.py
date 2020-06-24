@@ -10,6 +10,8 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail,EmailMessage
+
 
 # Create your views here.
 @login_required
@@ -18,7 +20,8 @@ def VisitLog(request,pk):
     form_visitor = VisitorForm()
     form_cell.fields['location'].initial = pk
     location = Location.objects.get(pk=pk)
-    visitors = Visitor.objects.all()
+    # visitors = Visitor.objects.all()
+
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor,"location":location.name})
 
 class VisitorListView(ListView,LoginRequiredMixin):
@@ -28,68 +31,10 @@ class VisitorListView(ListView,LoginRequiredMixin):
         return Visitor.objects.order_by('name')
 
 class VisitListView(ListView,LoginRequiredMixin):
-    paginate_by = 2
+    paginate_by = 10
     context_object_name = 'visit_list'
     queryset = Visit.objects.order_by('-timestamp')
     template_name='visit_list.html'
-
-def postVisitor(request):
-    # request should be ajax and method should be POST.
-    form_cell = VisitForm()
-    form_visitor = VisitorForm()
-    response_data = {}
-    if request.method == "POST":
-        # get the form data
-        cellphone = request.POST.get('cellphone')
-        name = request.POST.get('name')
-        location_id = request.POST.get('location')
-        location = Location.objects.get(pk=location_id)
-        temperature =request.POST.get('location')
-        dry_cough = request.POST.get('location')
-        breathing = request.POST.get('location')
-        flu = request.POST.get('location'),
-        other_contact = request.POST.get('location')
-        # save the data and after fetch the object in instance
-        if cellphone:
-            #check if exists in database
-            print(cellphone)
-            if Visitor.objects.filter(cellphone=cellphone).exists():
-                visitor = Visitor.objects.get(cellphone=cellphone)
-                access_record= visitor.visit_set.create(location=location,
-                                                        temperature=temperature,
-                                                        dry_cough=dry_cough,
-                                                        breathing= breathing,
-                                                        flu= flu,
-                                                        other_contact= other_contact)
-                response_data['name'] = access_record.cellphone.name
-                # ser_instance = serializers.serialize('json', [ instance, ])
-                return JsonResponse(response_data)
-            elif name:
-                print(name)
-                new_visitor=Visitor.objects.get_or_create(name=name,cellphone=cellphone)[0]
-                new_visitor.save()
-                print(new_visitor)
-                access_record=new_visitor.visit_set.create(location=location,
-                                                            temperature=temperature,
-                                                            dry_cough=dry_cough,
-                                                            breathing= breathing,
-                                                            flu= flu,
-                                                            other_contact= other_contact)
-                print(access_record)
-                response_data['name']=name
-                # instance = new_visitor.name
-                # ser_instance = serializers.serialize('json', [ instance, ])
-                return JsonResponse(response_data)
-            # instance = form.save()
-            # # serialize in new friend object in json
-            # ser_instance = serializers.serialize('json', [ instance, ])
-            # # send to client side.
-            # return JsonResponse({"instance": ser_instance}, status=200)
-        else:
-            # some form errors occured.
-            return JsonResponse({"error": cell.errors}, status=400)
-    # some error occured
-    return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor})
 
 def checkCell(request):
     # request should be ajax and method should be GET.
@@ -100,8 +45,9 @@ def checkCell(request):
         if Visitor.objects.filter(cellphone = cellphone).exists():
             visitor = Visitor.objects.get(cellphone=cellphone)
             name = visitor.name
+            v_email = visitor.visitor_email
             # if nick_name found return not valid new friend
-            return JsonResponse({"valid":False,"name":name}, status = 200)
+            return JsonResponse({"valid":False,"name":name,"email":v_email}, status = 200)
         else:
             # if nick_name not found, then user can create a new friend.
             return JsonResponse({"valid":True}, status = 200)
@@ -115,9 +61,52 @@ def Tables(request):
     return render(request,'tables.html')
 
 
+def formSubmit(request):
+    form_cell = VisitForm()
+    form_visitor = VisitorForm()
+    response_data = {}
+    if request.method == 'POST':
+        access_record = VisitForm(request.POST)
+        visitor = VisitorForm(request.POST)
+        if access_record.is_valid() & visitor.is_valid():
+            cellphone = access_record.cleaned_data['cellphone']
+            location_id = access_record.cleaned_data['location']
+            location = Location.objects.get(pk=location_id)
+            print(location)
+            temperature = access_record.cleaned_data['temperature']
+            dry_cough = access_record.cleaned_data['dry_cough']
+            breathing = access_record.cleaned_data['breathing']
+            flu = access_record.cleaned_data['flu']
+            other_contact = access_record.cleaned_data['other_contact']
+            name = visitor.cleaned_data['name']
+            v_email = visitor.cleaned_data['visitor_email']
 
-
-
+            if Visitor.objects.filter(cellphone=cellphone).exists():
+                existing_visitor = Visitor.objects.get(cellphone=cellphone)
+                new_access_record= existing_visitor.visit_set.create(location=location,
+                                                        temperature=temperature,
+                                                        dry_cough=dry_cough,
+                                                        breathing= breathing,
+                                                        flu = flu,
+                                                        other_contact= other_contact)
+                print("New record for existing visitor")
+                response_data['name'] = new_access_record.cellphone.name
+            else:
+                new_visitor=Visitor.objects.get_or_create(name=name,cellphone=cellphone,email=v_email)[0]
+                new_visitor.save()
+                new_access_record=new_visitor.visit_set.create(location=location,
+                                                            temperature=temperature,
+                                                            dry_cough=dry_cough,
+                                                            breathing= breathing,
+                                                            flu= flu,
+                                                            other_contact= other_contact)
+                print("New Visitor Created")
+                response_data['name']=name
+                return JsonResponse(response_data)
+        else:
+            print("ERROR: FORM INVALID")
+            return JsonResponse({"error": cell.errors}, status=400)
+    return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor})
 
 
 # class CreateVistorView(CreateView):

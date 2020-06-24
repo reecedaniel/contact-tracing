@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load humanize %}
-
+{% load static %}
 {% block content %}
 <style>
       .footer-hover {
@@ -38,10 +38,12 @@
       }
 </style>
 <!-- Header -->
-<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
-     style="min-height: 600px; background-image: url(/static/assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
+<!-- <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" -->
+     <!-- style="min-height: 600px; background-image: url(/static/assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;"> -->
+ <div class="header bg-gradient-success pb-8 pt-5 pt-md-8"
+      style=" background-size: cover; background-position: center top;">
   <!-- Mask -->
-  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- <span class="mask bg-gradient-default opacity-8"></span> -->
 <!-- <div class="jumbotron rounded-lg" style="margin-top: 1rem"> -->
 <div class="container-fluid d-flex align-items-center">
   <div class="row">
@@ -50,10 +52,37 @@
       <p class="text-white mt-0 mb-5">Manage your account</p>
       <hr class="my-4">
   <!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> -->
-      <a class="btn btn-primary btn-lg" href="{% url 'locations:create' %}" role="button">Add Location</a>
-</div>
-</div>
-</div>
+      <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+
+          </div>
+        </div>
+      </div>
+
+
+      <a class="create-location btn btn-primary btn-lg" href="#theModal" data-remote="{% url 'locations:create_location' %}" data-toggle="modal" data-target="#theModal">Add Location</a>
+        <div id="theModal" class="modal fade text-center" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Create Location</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body p-4 bg-secondary">
+                  ... remote content loads here ...
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+    </div>
+  </div>
+  </div>
 </div>
 <div class="container-fluid mt--7">
 <div class="col-xl-12 order-xl-1">
@@ -121,3 +150,35 @@
 
 
 {% endblock %}
+
+{% block javascripts %}
+<!-- <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    $(".create-location").modalForm({
+        formURL: "{% url 'locations:create_location' %}"
+    });
+
+});
+</script> -->
+<script type="text/javascript">
+  // $('.create-location').on('click', function(e){
+  //     e.preventDefault();
+  //     $('#theModal').modal('show').find('.modal-content').load($(this).attr('href'));
+  //   });
+  $('#theModal').on('show.bs.modal', function (e) {
+
+    var button = $(e.relatedTarget);
+    var modal = $(this);
+
+    // load content from HTML string
+    //modal.find('.modal-body').html("Nice modal body baby...");
+
+    // or, load content from value of data-remote url
+    modal.find('.modal-body').load(button.data("remote"));
+
+});
+</script>
+
+{% endblock javascripts %}

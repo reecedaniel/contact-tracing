@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
 <style>
   .alert{
@@ -13,18 +13,17 @@
       <h2 class="text-center">Welcome to {{location}}</h2>
 </div>
 
-
       <div class="container" id="div_form">
         <form method='POST' id="access-form">
           {% csrf_token %}
           <div id="cell_form">
-            {{form_cell.as_p}}
+            {{ form_cell | crispy }}
           </div>
           <div class="alert alert-success" role="alert" id="success-alert" aria-hidden="true">
             <span id="welcome"></span>
           </div>
           <div id="name_form">
-            {{form_visitor.as_p}}
+            {{ form_visitor | crispy }}
           </div>
           <input type="submit" class="btn btn-primary btn-lg btn-block" value="Log Visit" id="confirm" />
         </form>
@@ -47,36 +46,18 @@
     <!-- Optional JavaScript -->
     <script type="text/javascript" >
       var counter=0;
+
       // $("#success-alert").hide();
       $("#access-form").submit(function (e) {
           // preventing from page reload and default actions
           e.preventDefault();
           $("#success-alert").slideUp(500);
-          var cellphone = $("#id_cellphone").val();
-          var name = $("#id_name").val();
-          var location = $("#id_location").val()
-          var temperature = $("#id_temperature").val()
-          var dry_cough = $("#id_dry_cough").val()
-          var breathing = $("#id_breathing").val()
-          var flu=$("#id_flu").val()
-          var other_contact=$("#id_other_contact").val()
 
           // make POST ajax call
           $.ajax({
               type: 'POST',
               url: "{% url 'tracing:post_visitor' %}",
-              data: {
-                cellphone:cellphone,
-                name:name,
-                location:location,
-                temperature:temperature,
-                dry_cough:dry_cough,
-                breathing: breathing,
-                flu: flu,
-                other_contact: other_contact,
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                dataType: "json",
-              },
+              data: $('#access-form').serialize(),
               success: function (response) {
                   // 1. clear the form.
                   // console.log("Created")
@@ -87,6 +68,7 @@
               },
               error : function(xhr,errmsg,err) {
                       console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                      // console.log(dry_cough)
               }
           })
       })
@@ -118,6 +100,7 @@
                        // nickName.focus()
                        //$("#name_form").hide()
                        $("#id_name").val(response["name"])
+                       $("#id_visitor_email").val(response["email"])
                        // if(counter<=0){
                          $("#success-alert").show()
                          $("#welcome" ).text("Welcome back " + response["name"]+" "+"😃" );

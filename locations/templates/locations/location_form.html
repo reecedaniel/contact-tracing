@@ -1,17 +1,36 @@
-{% extends "base.html" %}
-
-{# at the terminal, run pip install django-bootstrap4 #}
 
 
-{% block content %}
-<div class="container">
-  <h1>Add Location</h1>
-  <form method="POST" class="form">
-    {% csrf_token %}
-    {{form.as_p}}
 
-    <button type="submit" class="btn btn-primary">Add</button>
-
-  </form>
-</div>
-{% endblock %}
+  <!-- <div class="modal-header">
+    <h3 class="modal-title">Create Location</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div> -->
+  {% if not form.instance.pk %}
+  <div class="modal-body">
+      <h1>{{location.id}}</h1>
+      <form method="post" action="{% url 'locations:create_location' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+  </div>
+  {% else %}
+  <div class="modal-body">
+      <!-- <h1>{{ location_pk }}</h1> -->
+      <form id="updateform" method="post" action="{% url 'locations:update_location' location_pk %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+  </div>
+  {% endif %}
+  <!-- <div class="modal-body">
+      <h1>{{location.id}}</h1>
+      <form method="post" action="{% url 'locations:create_location' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+  </div> -->

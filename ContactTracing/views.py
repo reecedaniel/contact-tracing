@@ -6,7 +6,7 @@ class ThanksPage(TemplateView):
     template_name = 'thanks.html'
 
 class index(TemplateView):
-    template_name = 'index.html'
+    template_name = 'accounts/login.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:

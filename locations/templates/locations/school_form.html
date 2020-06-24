@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+
+{%block content %}
+<div class="container">
+  <h1>
+    {% if not form.instance.pk %}
+    Create School
+    {% else %}
+    Update School
+    {% endif %}
+  </h1>
+
+  <div class="col-xl-12 order-xl-1">
+    <div class="card bg-secondary shadow">
+      <div class="card-header bg-white border-0">
+        <div class="row align-items-center">
+          <div class="col-12">
+              <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" name="btn btn-primary" value="Submit">
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -25,7 +25,7 @@ SECRET_KEY = 'dlalyqni6xq*c##2b4fj64y3imzii6b)u$%leji0bft81mx($u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [] #'192.168.88.222'
+ALLOWED_HOSTS = [] #'192.168.88.222',192.168.43.252
 
 
 # Application definition
@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'tracing',
     'accounts',
     'locations',
+    'crispy_forms',
+    'bootstrap_modal_forms',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -124,5 +127,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static'),]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'index'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

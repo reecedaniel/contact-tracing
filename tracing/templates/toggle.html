@@ -1,0 +1,18 @@
+{% load crispy_forms_field %}
+
+<!-- <style>
+  .custom-toggle-slider:after{
+    content:attr(data-label-off)
+  }
+  input:checked + .custom-toggle-slider:after{
+    content:"OFF"
+  }
+</style> -->
+
+<div class="form-group">
+  <span class="clearfix">{{ field.label }}</span>
+  <label class="custom-toggle align-middle float-sm-right">
+      <input type="checkbox" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+      <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+  </label>
+</div>
