@@ -10,6 +10,7 @@ from braces.views import SelectRelatedMixin
 from .forms import LocationUpdateForm, LocationCreateForm
 from django.contrib.messages.views import SuccessMessageMixin
 from tracing.models import Visit
+from django.http import JsonResponse
 
 # Create your views here.
 class CreateLocation(SuccessMessageMixin,LoginRequiredMixin,CreateView):
@@ -63,6 +64,9 @@ class LocationDetail(SingleObjectMixin,ListView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=models.Location.objects.all())
+        # queryset = self.get_queryset()
+        # data = list(queryset.values())
+        # return JsonResponse(data, safe=False)
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -72,3 +76,12 @@ class LocationDetail(SingleObjectMixin,ListView):
 
     def get_queryset(self):
         return self.object.visit_set.all().order_by('-timestamp')
+
+    # def def render_to_json_response(self, context, **response_kwargs):
+    #     """
+    #     Returns a JSON response, transforming 'context' to make the payload.
+    #     """
+    #     return JsonResponse(
+    #         self.get_data(context),
+    #         **response_kwargs
+    #     )
