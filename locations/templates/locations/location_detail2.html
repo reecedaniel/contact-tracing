@@ -37,7 +37,7 @@
               <div class="col-lg-3 order-lg-2">
                 <div class="card-profile-image">
                   <a href="#">
-                    <img src="/static/assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+                    <img src="/static/assets/img/theme/location.png" class="rounded-circle">
                   </a>
                 </div>
               </div>
@@ -72,16 +72,16 @@
                 <div class="col">
                   <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                     <div>
-                      <span class="heading">22</span>
-                      <span class="description">Friends</span>
+                      <span class="heading">{{ total_visits }}</span>
+                      <span class="description">Total Visits</span>
                     </div>
                     <div>
-                      <span class="heading">10</span>
-                      <span class="description">Photos</span>
+                      <span class="heading">{{ month }}</span>
+                      <span class="description">This Month</span>
                     </div>
                     <div>
-                      <span class="heading">89</span>
-                      <span class="description">Comments</span>
+                      <span class="heading">{{ unique }}</span>
+                      <span class="description">Unique <br> this month</span>
                     </div>
                   </div>
                 </div>
@@ -111,7 +111,7 @@
             <div class="card-header bg-white border-0">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h3 class="mb-0">My account</h3>
+                  <h3 class="mb-0">Visit List</h3>
                 </div>
                 <div class="col-4 text-right">
                   <a href="#!" class="btn btn-sm btn-primary">Settings</a>

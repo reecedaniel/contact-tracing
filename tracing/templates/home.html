@@ -12,6 +12,9 @@
       <h1>Visits</h1>
       <h2 class="text-center">Welcome to {{location}}</h2>
 </div>
+      <div id=div_message>
+
+      </div>
 
       <div class="container" id="div_form">
         <form method='POST' id="access-form">
@@ -27,6 +30,7 @@
           </div>
           <input type="submit" class="btn btn-primary btn-lg btn-block" value="Log Visit" id="confirm" />
         </form>
+        <div id="public_toggle_form-errors" class="alert alert-danger" style="display: none;margin:5px"></div>
 
 
       </div>
@@ -61,14 +65,33 @@
               success: function (response) {
                   // 1. clear the form.
                   // console.log("Created")
+                  console.log(response["message"])
+                  $(window).scrollTop(0);
+                  $("#div_message").append("<div class='alert alert-success' id='success-alert'>"+response["message"]+"</div>");
+                  $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#success-alert").slideUp(500);
+                  });
                   $("#access-form").trigger('reset');
                   console.log('form submitted')
                   // 2. focus to nickname input
                   counter=0
               },
-              error : function(xhr,errmsg,err) {
+              error :
+              function(xhr,errmsg,err) {
                       console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                      // console.log(dry_cough)
+                      var err = xhr.responseJSON;
+                      for(var obj in err) {
+                          var item = err[obj];
+                          for (var key in item){
+                            console.log(key)
+                            console.log(item[key])
+                            $('#public_toggle_form-errors').append(key.toUpperCase()+": "+item[key]+ "<br>");
+                          }
+                          // $('#public_toggle_form-errors').text(item);
+
+                          // console.log(item.cellphone);
+                      }
+                      $('#public_toggle_form-errors').show()
               }
           })
       })
@@ -116,9 +139,16 @@
                         // }
                        //alert("Welcome Back!");
                    }
+                   if(response["valid"]){
+                     $("#id_name").val('')
+                     $("#id_visitor_email").val('')
+                     $("#success-alert").hide()
+                     $("#welcome" ).text('');
+                  }
+
                },
                error: function (response) {
-                   console.log(response)
+                   console.log(response['error'])
                }
            })
         })

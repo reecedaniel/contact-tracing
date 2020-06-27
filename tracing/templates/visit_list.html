@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-
+{% load dashboard_tags %}
 {% block title %} Tables {% endblock title %}
 {% block stylesheets %}
 
@@ -18,8 +18,8 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Monhtly Visits</h5>
-                      <span class="h2 font-weight-bold mb-0">15</span>
+                      <h5 class="card-title text-uppercase text-muted mb-0">Monthly Visits</h5>
+                      <span class="h2 font-weight-bold mb-0">{{ month_visits }}</span>
                     </div>
                     <div class="col-auto">
                       <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -28,7 +28,8 @@
                     </div>
                   </div>
                   <p class="mt-3 mb-0 text-muted text-sm">
-                    <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                    {{last_month_visits|difference:month_visits|safe}}
+                    <!-- <span class="text-success mr-2"><i class="fa fa-arrow-up"></i>{{last_month_visits|difference:month_visits}}</span> -->
                     <span class="text-nowrap">Since last month</span>
                   </p>
                 </div>
@@ -175,6 +176,8 @@
                       </table>
                     </td>
                   </tr>
+                  {% empty %}
+                  <td>Sorry, no visits yet.</td>
                   {% endfor %}
                 </tbody>
               </table>

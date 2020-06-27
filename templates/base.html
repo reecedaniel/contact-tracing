@@ -32,32 +32,38 @@
 
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#"><i class="fab fa-connectdevelop"></i>Contact Tracing</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          {% with url_name=request.resolver_match.url_name %}
-          <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a>
-          </li>
-          {% if user.is_authenticated %}
-            <li class="nav-item ">
-              <a class="nav-link" href="{% url 'accounts:logout' %}">Log Out</a>
+    <nav class="navbar navbar-top navbar-horizontal navbar-expand-md navbar-dark bg-primary">
+      <div class="container px-4">
+        <a class="navbar-brand" href="#">
+            <span>
+              <img src="/static/assets/img/brand/white.png" />
+            </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            {% with url_name=request.resolver_match.url_name %}
+            <li class="nav-item {% if url_name == 'index' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a>
             </li>
-          {% else %}
-            <li class="nav-item {% if url_name == 'login' %}active{% endif %}">
-              <a class="nav-link" href="{% url 'accounts:login' %}">Log In</a>
-            </li>
-            <li class="nav-item {% if url_name == 'signup' %}active{% endif %}">
-              <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
-            </li>
-          {% endif %}
-          {% endwith %}
-        </ul>
+            {% if user.is_authenticated %}
+              <li class="nav-item ">
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Log Out</a>
+              </li>
+            {% else %}
+              <li class="nav-item {% if url_name == 'login' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'accounts:login' %}">Log In</a>
+              </li>
+              <li class="nav-item {% if url_name == 'signup' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+              </li>
+            {% endif %}
+            {% endwith %}
+          </ul>
+        </div>
       </div>
     </nav>
 

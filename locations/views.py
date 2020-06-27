@@ -11,9 +11,11 @@ from .forms import LocationUpdateForm, LocationCreateForm
 from django.contrib.messages.views import SuccessMessageMixin
 from tracing.models import Visit
 from django.http import JsonResponse
+import datetime
+from django.db.models import Count
 
 # Create your views here.
-class CreateLocation(SuccessMessageMixin,LoginRequiredMixin,CreateView):
+class CreateLocation(LoginRequiredMixin,SuccessMessageMixin,CreateView):
     template_name = 'locations/location_form.html'
     form_class = LocationCreateForm
     # success_message = 'Success: Location was created.'
@@ -28,7 +30,7 @@ class CreateLocation(SuccessMessageMixin,LoginRequiredMixin,CreateView):
         self.object.user = self.request.user
         self.object.save()
 
-class LocationUpdate(UpdateView):
+class LocationUpdate(LoginRequiredMixin,UpdateView):
     context_object_name = 'location_detail'
     model = models.Location
     template_name = 'locations/location_form.html'
@@ -51,7 +53,7 @@ class LocationList(LoginRequiredMixin,ListView):
     # select_related = ('user')
 
 #TO DELETE
-class LocationDetailView(UpdateView):
+class LocationDetailView(LoginRequiredMixin,UpdateView):
     context_object_name = 'location_detail'
     model = models.Location
     template_name = 'locations/location_detail.html'
@@ -59,7 +61,7 @@ class LocationDetailView(UpdateView):
 
     #automatically creates context dictionary school (i.e. model name in lower case)
 
-class LocationDetail(SingleObjectMixin,ListView):
+class LocationDetail(LoginRequiredMixin,SingleObjectMixin,ListView):
     template_name = 'locations/location_detail2.html'
 
     def get(self, request, *args, **kwargs):
@@ -72,6 +74,18 @@ class LocationDetail(SingleObjectMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['location'] = self.object
+        visits_data = self.get_queryset()
+        context['total_visits'] = visits_data.count()
+        today = datetime.date.today()
+        month = today.month
+        month_visits = visits_data.filter(timestamp__month = month)
+        context['month'] = month_visits.count()
+        unique_visits = month_visits.values('cellphone').annotate(cell_count=Count('cellphone')).order_by().filter(cell_count__gt=1)
+        context['unique'] = unique_visits.count()
+
+        # repeats = visits_data.annotate(num_visits=Count('timestamp'))
+        # print(repeats[0].num_visits)
+        # context['repeats_today'] = repeats.filter(timestamp__gt = today).count()
         return context
 
     def get_queryset(self):

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from tracing.models import Visitor,Visit
 from locations.models import Location
 from tracing.forms import VisitorForm,VisitForm
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse,HttpResponseBadRequest
 from django.urls import reverse
 from django.views.generic import (TemplateView,ListView,DetailView,CreateView,UpdateView,DeleteView)
 from django.http import JsonResponse
@@ -11,6 +11,8 @@ from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail,EmailMessage
+from django.contrib import messages
+import datetime
 
 
 # Create your views here.
@@ -24,17 +26,36 @@ def VisitLog(request,pk):
 
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor,"location":location.name})
 
-class VisitorListView(ListView,LoginRequiredMixin):
+class VisitorListView(LoginRequiredMixin,ListView):
     model = Visitor
 
     def get_queryset(self):
         return Visitor.objects.order_by('name')
 
-class VisitListView(ListView,LoginRequiredMixin):
+class VisitListView(LoginRequiredMixin,ListView):
     paginate_by = 10
     context_object_name = 'visit_list'
-    queryset = Visit.objects.order_by('-timestamp')
+    # queryset = Visit.objects.select_related('location__user').filter(location__user=self.request.user).order_by('-timestamp')
     template_name='visit_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = datetime.date.today()
+        month = today.month
+        all_visits = self.get_queryset()
+        month_visits = all_visits.filter(timestamp__month = month)
+        last_month_visits = all_visits.filter(timestamp__month = month-1)
+        month_visits_count = month_visits.count()
+        last_month_visits_count = last_month_visits.count()
+        # percentage_change
+        context['month_visits'] = month_visits_count
+        context['last_month_visits'] = last_month_visits_count
+
+        return context
+
+    def get_queryset(self):
+        queryset = Visit.objects.select_related('location__user').filter(location__user=self.request.user).order_by('-timestamp')
+        return queryset
 
 def checkCell(request):
     # request should be ajax and method should be GET.
@@ -92,7 +113,7 @@ def formSubmit(request):
                 print("New record for existing visitor")
                 response_data['name'] = new_access_record.cellphone.name
             else:
-                new_visitor=Visitor.objects.get_or_create(name=name,cellphone=cellphone,email=v_email)[0]
+                new_visitor=Visitor.objects.get_or_create(name=name,cellphone=cellphone,visitor_email=v_email)[0]
                 new_visitor.save()
                 new_access_record=new_visitor.visit_set.create(location=location,
                                                             temperature=temperature,
@@ -102,10 +123,12 @@ def formSubmit(request):
                                                             other_contact= other_contact)
                 print("New Visitor Created")
                 response_data['name']=name
-                return JsonResponse(response_data)
+            response_data['message'] = "Visit Logged"
+            return JsonResponse(response_data)
         else:
             print("ERROR: FORM INVALID")
-            return JsonResponse({"error": cell.errors}, status=400)
+            # errors = access_record.errors.as_JSON()
+            return JsonResponse({"error": access_record.errors}, status=400)
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor})
 
 
