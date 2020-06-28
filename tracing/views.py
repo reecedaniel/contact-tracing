@@ -35,7 +35,7 @@ class VisitorListView(LoginRequiredMixin,ListView):
         return Visitor.objects.filter(user=self.request.user).order_by('name')
 
 class VisitListView(LoginRequiredMixin,ListView):
-    paginate_by = 10
+    # paginate_by = 10
     context_object_name = 'visit_list'
     # queryset = Visit.objects.select_related('location__user').filter(location__user=self.request.user).order_by('-timestamp')
     template_name='visit_list.html'

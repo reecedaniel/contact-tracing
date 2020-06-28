@@ -102,13 +102,13 @@
             <a class="nav-link " href="/maps.html">
               <i class="ni ni-pin-3 text-orange"></i> Maps
             </a>
-          </li>
+          </li>-->
           <li class="nav-item">
-            <a class="nav-link " href="/profile.html">
-              <i class="ni ni-single-02 text-yellow"></i> User profile
+            <a class="nav-link " href="{% url 'accounts:subscription' username=request.user.username %}">
+              <i class="ni ni-single-02 text-green"></i> Account
             </a>
           </li>
-          <li class="nav-item">
+        <!--   <li class="nav-item">
             <a class="nav-link " href="/tables.html">
               <i class="ni ni-bullet-list-67 text-info"></i> Tables
             </a>

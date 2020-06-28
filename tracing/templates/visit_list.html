@@ -5,13 +5,15 @@
 <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
 
 <style>
-    .hightemperature{
-      border-radius:0.375rem;
-      background-color:rgba(147, 231, 195, 0.5);
-    }
-    .lowtemperature{
-      background-color:rgba(251, 175, 190, 0.5);
-    }
+  .hidden{
+    display:none;
+  }
+  .symptom_warning{
+     background-color:rgba(251, 175, 190, 0.5)
+  }
+  .symptom_ok{
+    background-color:rgba(147, 231, 195, 0.5)
+  }
 
 
 </style>
@@ -70,11 +72,11 @@
               </div>
             </div>
             <div class="col-xl-3 col-lg-6">
-              <div class="card h-100 card-stats mb-4 mb-xl-0">
+              <div class="card card-stats mb-4 mb-xl-0">
                 <div class="card-body">
                   <div class="row">
                     <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Average visits per day</h5>
+                      <h5 class="card-title text-uppercase text-muted mb-0">Average visits</h5>
                       <span class="h2 font-weight-bold mb-0">{{ average_per_day }}</span>
                     </div>
                     <div class="col-auto">
@@ -85,7 +87,7 @@
                   </div>
                   <p class="mt-3 mb-0 text-muted text-sm">
                     <!-- <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i> 0%</span> -->
-                    <!-- <span class="text-nowrap">Since yesterday</span> -->
+                    <span class="text-nowrap">per day</span>
                   </p>
                 </div>
               </div>
@@ -126,21 +128,37 @@
               <h3 class="mb-0">Recent Visits</h3>
             </div>
             <div class="table-responsive">
-              <table class="table align-items-center table-flush"              >
+              <table class="table align-items-center table-flush"
+              id="AllVisits"
+              data-toggle="table"
+              data-toolbar="#toolbar"
+              data-search="true"
+              data-pagination="true"
+              data-page-list="[10, 25, 50, 100, 200, All]"
+              data-show-export="true"
+              data-export-types="['xml','csv','txt','excel']"
+              data-export-data-type = "all"
+              data-click-to-select="true"
+              data-filter-control="true"
+              data-detail-view="true"
+              data-detail-view-by-click="true"
+              data-detail-view-icon="false"
+              data-detail-formatter="DetailFormatter"
+              data-show-search-clear-button="true">
                 <thead class="thead-light">
                   <tr>
                     <th></th>
-                    <th>Location</th>
-                    <th>Name</th>
-                    <th>Cellphone</th>
-                    <th>Email</th>
-                    <th>Time</th>
-                    <!-- <th scope="col" data-sortable="true">Temperature</th>
-                    <th scope="col" data-sortable="true">Dry Cough</th>
-                    <th scope="col" data-sortable="true">Breathing Problems</th>
-                    <th scope="col" data-sortable="true">Flu Symptoms</th>
-                    <th scope="col" data-sortable="true">Risky Contacts</th> -->
+                    <th scope="col" data-sortable="true" data-field="location" data-filter-control="input">Location</th>
+                    <th scope="col" data-sortable="true" data-field="name" data-filter-control="input">Name</th>
+                    <th scope="col" data-sortable="true" data-field="cellphone" data-filter-control="input">Cellphone</th>
+                    <th scope="col" data-sortable="true" data-field="email" data-filter-control="input">Email</th>
+                    <th scope="col" data-sortable="true" data-field="time" data-filter-control="datepicker" data-filter-datepicker-options='{"autoclose":true, "clearBtn": true, "todayHighlight": true, "format":"dd-mm-yyyy"}'>Time</th>
                     <th scope="col"></th>
+                    <th scope="col" data-field="temp" class="hidden">Temperature</th>
+                    <th scope="col" data-field="cough" class="hidden">Dry Cough</th>
+                    <th scope="col" data-field="breath" class="hidden">Breathing Problems</th>
+                    <th scope="col" data-field="flu" class="hidden">Flu Symptoms</th>
+                    <th scope="col" data-field="other" class="hidden">Risky Contacts</th>
                   </tr>
                 </thead>
                 <tbody id="items">
@@ -161,11 +179,6 @@
                       <td>{{ item.cellphone.cellphone }}</td>
                       <td>{{ item.cellphone.visitor_email }}</td>
                       <td>{{ item.timestamp|date:"d-m-Y H:i" }}</td>
-                      <!-- <td class="{% if item.temperature < 38 %} hightemperature {% else %} lowtemperature {% endif %}">{{ item.temperature}}</td> -->
-                      <!-- <td style="border-radius:0.375rem;{% if item.dry_cough == True %} background-color:rgba(251, 175, 190, 0.5) {% endif %}">{{ item.dry_cough|yesno }}</td> -->
-                      <!-- <td style="border-radius:0.375rem;{% if item.breathing == True %} background-color:rgba(251, 175, 190, 0.5) {% endif %}">{{ item.breathing|yesno }}</td>
-                      <td style="border-radius:0.375rem;{% if item.flu == True %} background-color:rgba(251, 175, 190, 0.5) {% endif %}">{{ item.flu|yesno }}</td>
-                      <td style="border-radius:0.375rem;{% if item.other_contact == True %} background-color:rgba(251, 175, 190, 0.5) {% endif %}">{{ item.other_contact|yesno }}</td> -->
                       <td class="text-right">
                         <div class="dropdown">
                           <a class="btn btn-sm btn-icon-only text-warning" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -177,8 +190,13 @@
                           </div>
                         </div>
                       </td>
+                      <td id='temp'{{loop.index|safe}} data-temp={{item.temperature}} class="hidden">{{item.temperature}} </td>
+                      <td id='cough' data-cough={{item.dry_cough|yesno}} class="hidden">{{item.dry_cough|yesno}}</td>
+                      <td id='breathing' data-breath={{item.breathing|yesno}} class="hidden">{{item.breathing|yesno}}</td>
+                      <td id='flu' data-flu={{item.flu|yesno}} class="hidden">{{item.flu|yesno}}</td>
+                      <td id='other' data-id={{item.other_contact|yesno}} class="hidden">{{item.other_contact|yesno}}</td>
                   </tr>
-                  <tr class="accordian-body collapse" style="background-color:#e9ecef" id="collapse{{item.id}}">
+                  <!-- <tr class="accordian-body collapse" style="background-color:#e9ecef" id="collapse{{item.id}}">
                     <td colspan="6">
                       <table style="text-align: center;">
                         <tr>
@@ -197,7 +215,7 @@
                         </tr>
                       </table>
                     </td>
-                  </tr>
+                  </tr> -->
                   {% empty %}
                   <td>Sorry, no visits yet.</td>
                   {% endfor %}
@@ -587,20 +605,70 @@
 
 
 // Load detail view
-$('#AllVisits').on('expand-row.bs.table', function (e, index, row, $detail) {
+// $('#AllVisits').on('expand-row.bs.table', function (e, index, row, $detail) {
+//
+//     // Get subtable from first cell
+//     var $rowDetails = $(row[0]);
+//
+//     // Give new id to avoid conflict with first cell
+//     var id = $rowDetails.attr("id");
+//     $rowDetails.attr("id", id + "-Show");
+//
+//     // Write rowDetail to detail
+//     $detail.html($rowDetails);
+//
+//     return;
+//
+// })
 
-    // Get subtable from first cell
-    var $rowDetails = $(row[0]);
+function DetailFormatter(index, row) {
 
-    // Give new id to avoid conflict with first cell
-    var id = $rowDetails.attr("id");
-    $rowDetails.attr("id", id + "-Show");
+    var html = []
+    if (row['temp']>=38) {
+      var tempStyle = 'symptom_warning'
+    } else {
+      var tempStyle = 'symptom_ok'
+    }
 
-    // Write rowDetail to detail
-    $detail.html($rowDetails);
+    if (row['cough']=='yes') {
+      var coughStyle = 'symptom_warning'
+    }
 
-    return;
+    if (row['breath']=='yes') {
+      var breathStyle = 'symptom_warning'
+    }
 
-})
+    if (row['flu']=='yes') {
+      var fluStyle = 'symptom_warning'
+    }
+
+    if (row['other']=='yes') {
+      var otherStyle = 'symptom_warning'
+    }
+
+    html.push(`<table style="text-align: center;">
+                <tr>
+                  <th>Temperature</th>
+                  <th>Dry Cough</th>
+                  <th>Breathing Problems</th>
+                  <th>Flu Symptoms</th>
+                  <th>Risky Contacts</th>
+                </tr>
+                <tr>
+                <td style="border-radius:0.375rem;" class="`+tempStyle+`">`+ row['temp'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+coughStyle+`">`+ row['cough'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+breathStyle+`">`+ row['breath'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+fluStyle+`">`+ row['flu'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+otherStyle+`">`+ row['other'] +`</td>
+                </tr></table>`)
+
+    return html.join('')
+  }
+
+  $table = $('#AllVisits').bootstrapTable({
+      exportOptions: { ignoreColumn: [0,5] }
+  });
+
+
 </script>
 {% endblock javascripts %}
