@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail,EmailMessage
 from django.contrib import messages
 import datetime
+from django.db.models import Min, Max, Sum
 
 
 # Create your views here.
@@ -26,11 +27,12 @@ def VisitLog(request,pk):
 
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor,"location":location.name})
 
+#notbeingused
 class VisitorListView(LoginRequiredMixin,ListView):
     model = Visitor
 
     def get_queryset(self):
-        return Visitor.objects.order_by('name')
+        return Visitor.objects.filter(user=self.request.user).order_by('name')
 
 class VisitListView(LoginRequiredMixin,ListView):
     paginate_by = 10
@@ -42,20 +44,35 @@ class VisitListView(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         today = datetime.date.today()
         month = today.month
+        day= today.day
         all_visits = self.get_queryset()
         month_visits = all_visits.filter(timestamp__month = month)
         last_month_visits = all_visits.filter(timestamp__month = month-1)
-        month_visits_count = month_visits.count()
-        last_month_visits_count = last_month_visits.count()
-        # percentage_change
-        context['month_visits'] = month_visits_count
-        context['last_month_visits'] = last_month_visits_count
+        high_temp_today = all_visits.filter(timestamp__day = day,temperature__gte=38)
+        context['month_visits'] = month_visits.count()
+        context['last_month_visits'] = last_month_visits.count()
+        context['today_visits'] = all_visits.filter(timestamp__day = day).count()
+        print(all_visits.filter(timestamp__day = day-1).count())
+        context['yesterday_visits']= all_visits.filter(timestamp__day = day-1).count()
+        context['average_per_day']= self.average_visits_per_day()
+        context['high_temp_today']= high_temp_today.count()
 
         return context
 
-    def get_queryset(self):
+    def get_queryset(self): #should probably include this in models as a manager
         queryset = Visit.objects.select_related('location__user').filter(location__user=self.request.user).order_by('-timestamp')
         return queryset
+
+    def average_visits_per_day(self):
+        aggregate = self.get_queryset().aggregate(Min('timestamp'), Max('timestamp'))
+        min_datetime = aggregate.get('timestamp__min')
+        if min_datetime is not None:
+            min_date = min_datetime.date()
+            max_date = aggregate.get('timestamp__max').date()
+            total_visits = self.get_queryset().count()
+            days = (max_date - min_date).days + 1
+            return round(total_visits / days)
+        return 0
 
 def checkCell(request):
     # request should be ajax and method should be GET.

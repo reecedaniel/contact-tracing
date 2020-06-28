@@ -1,6 +1,7 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from locations.models import Location
+from django.db.models import Min, Max, Sum
 # Create your models here.
 class Visitor(models.Model):
     name = models.CharField(max_length=264,unique=False)

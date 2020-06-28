@@ -13,6 +13,7 @@ from tracing.models import Visit
 from django.http import JsonResponse
 import datetime
 from django.db.models import Count
+from django.db.models import Min, Max, Sum
 
 # Create your views here.
 class CreateLocation(LoginRequiredMixin,SuccessMessageMixin,CreateView):
@@ -65,7 +66,7 @@ class LocationDetail(LoginRequiredMixin,SingleObjectMixin,ListView):
     template_name = 'locations/location_detail2.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=models.Location.objects.all())
+        self.object = self.get_object(queryset=models.Location.objects.filter(user=self.request.user))
         # queryset = self.get_queryset()
         # data = list(queryset.values())
         # return JsonResponse(data, safe=False)
@@ -80,22 +81,22 @@ class LocationDetail(LoginRequiredMixin,SingleObjectMixin,ListView):
         month = today.month
         month_visits = visits_data.filter(timestamp__month = month)
         context['month'] = month_visits.count()
-        unique_visits = month_visits.values('cellphone').annotate(cell_count=Count('cellphone')).order_by().filter(cell_count__gt=1)
+        unique_visits = month_visits.values('cellphone').annotate(cell_count=Count('cellphone')).order_by().filter(cell_count__gt=0)
         context['unique'] = unique_visits.count()
+        context['average_per_day']= self.average_visits_per_day()
 
-        # repeats = visits_data.annotate(num_visits=Count('timestamp'))
-        # print(repeats[0].num_visits)
-        # context['repeats_today'] = repeats.filter(timestamp__gt = today).count()
         return context
 
     def get_queryset(self):
         return self.object.visit_set.all().order_by('-timestamp')
 
-    # def def render_to_json_response(self, context, **response_kwargs):
-    #     """
-    #     Returns a JSON response, transforming 'context' to make the payload.
-    #     """
-    #     return JsonResponse(
-    #         self.get_data(context),
-    #         **response_kwargs
-    #     )
+    def average_visits_per_day(self):
+        aggregate = self.get_queryset().aggregate(Min('timestamp'), Max('timestamp'))
+        min_datetime = aggregate.get('timestamp__min')
+        if min_datetime is not None:
+            min_date = min_datetime.date()
+            max_date = aggregate.get('timestamp__max').date()
+            total_visits = self.get_queryset().count()
+            days = (max_date - min_date).days + 1
+            return round(total_visits / days)
+        return 0

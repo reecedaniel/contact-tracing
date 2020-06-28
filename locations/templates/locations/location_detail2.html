@@ -7,6 +7,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<style>
+  .hidden{
+    display:none;
+  }
+  .symptom_warning{
+     background-color:rgba(251, 175, 190, 0.5)
+  }
+  .symptom_ok{
+    background-color:rgba(147, 231, 195, 0.5)
+  }
+
+</style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -83,6 +95,10 @@
                       <span class="heading">{{ unique }}</span>
                       <span class="description">Unique <br> this month</span>
                     </div>
+                    <div>
+                      <span class="heading">{{ average_per_day }}</span>
+                      <span class="description">Average visits <br> per day</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -133,12 +149,18 @@
                 id="LocationVisits"
                 data-toggle="table"
                 data-toolbar="#toolbar"
-                data-pagination="true"
                 data-search="true"
+                data-pagination="true"
+                data-page-list="[10, 25, 50, 100, 200, All]"
                 data-show-export="true"
                 data-export-types="['xml','csv','txt','excel']"
+                data-export-data-type = "all"
                 data-click-to-select="true"
                 data-filter-control="true"
+                data-detail-view="true"
+                data-detail-view-by-click="true"
+                data-detail-view-icon="false"
+                data-detail-formatter="DetailFormatter"
                 data-show-search-clear-button="true">
                   <thead class="thead-light">
                     <tr>
@@ -147,31 +169,46 @@
                       <th scope="col" data-sortable="true" data-field="name" data-filter-control="input">Name</th>
                       <th scope="col" data-sortable="true" data-field="cellphone" data-filter-control="input">Cellphone</th>
                       <th scope="col" data-sortable="true" data-field="time" data-filter-control="datepicker" data-filter-datepicker-options='{"autoclose":true, "clearBtn": true, "todayHighlight": true, "format":"dd-mm-yyyy"}'>Time</th>
-                      <th scope="col" data-sortable="true"></th>
+                      <th scope="col"></th>
+                      <th scope="col" data-field="temp" class="hidden">Temperature</th>
+                      <th scope="col" data-field="cough" class="hidden">Dry Cough</th>
+                      <th scope="col" data-field="breath" class="hidden">Breathing Problems</th>
+                      <th scope="col" data-field="flu" class="hidden">Flu Symptoms</th>
+                      <th scope="col" data-field="other" class="hidden">Risky Contacts</th>
                     </tr>
                   </thead>
                   <tbody id="items">
                       {% for item in object_list %}
                         <tr data-toggle="collapse" data-target="#collapse{{item.id}}" class="accordion-toggle">
                         <td><i class="fa fa-plus"></i></td>
-                        <td>{{ item.location }}</td>
-                        <td>{{ item.cellphone.name }}</td>
-                        <td>  <span class="badge badge-dot mr-4">
-                              <i class="bg-warning"></i>{{ item.cellphone.cellphone }}
-                              </span></td>
+                        <td >{{ item.location }}</td>
+                        <td>{% if item.temperature > 38 %}
+                              <span class="badge badge-dot mr-4">
+                              <i class="bg-danger"></i>
+                              {% elif item.dry_cough == True or item.breathing == True or item.flu == True or item.other_contact == True %}
+                              <span class="badge badge-dot mr-4">
+                              <i style="background-color:#f4a261"></i>
+                              {% endif %}
+                              {{ item.cellphone.name }}
+                            </span></td>
+                        <td>  {{ item.cellphone.cellphone }}</td>
                         <td>{{ item.timestamp|date:"d-m-Y H:i" }}</td>
                         <td class="text-right">
                           <div class="dropdown">
-                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v"></i>
+                            <a class="btn btn-sm btn-icon-only text-warning" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="ni ni-email-83"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                              <a class="dropdown-item" href="#">Action</a>
-                              <a class="dropdown-item" href="#">Another action</a>
-                              <a class="dropdown-item" href="#">Something else here</a>
+                              <a class="dropdown-item" href="sms:{{ item.cellphone.cellphone }}">Send SMS</a>
+                              <a class="dropdown-item" href="mailto:{{ item.cellphone.visitor_email }}?subject=Alert from {{ item.location }}"">Send Email</a>
                             </div>
                           </div>
                         </td>
+                        <td id='temp'{{loop.index|safe}} data-temp={{item.temperature}} class="hidden">{{item.temperature}} </td>
+                        <td id='cough' data-cough={{item.dry_cough|yesno}} class="hidden">{{item.dry_cough|yesno}}</td>
+                        <td id='breathing' data-breath={{item.breathing|yesno}} class="hidden">{{item.breathing|yesno}}</td>
+                        <td id='flu' data-flu={{item.flu|yesno}} class="hidden">{{item.flu|yesno}}</td>
+                        <td id='other' data-id={{item.other_contact|yesno}} class="hidden">{{item.other_contact|yesno}}</td>
                     </tr>
                     <!-- <tr class="accordian-body collapse" style="background-color:#e9ecef" id="collapse{{item.id}}">
                       <td colspan="6" class="accordian-body collapse" style="background-color:#e9ecef" id="collapse{{item.id}}">
@@ -260,14 +297,6 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/export/bootstrap-table-export.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
-<script src="http://malsup.github.com/jquery.form.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 
 <script type="text/javascript">
 
@@ -330,6 +359,55 @@
     $('#LocationVisits').bootstrapTable('filterBy', {});
   })
 });
+
+function DetailFormatter(index, row) {
+
+    var html = []
+    if (row['temp']>=38) {
+      var tempStyle = 'symptom_warning'
+    } else {
+      var tempStyle = 'symptom_ok'
+    }
+
+    if (row['cough']=='yes') {
+      var coughStyle = 'symptom_warning'
+    }
+
+    if (row['breath']=='yes') {
+      var breathStyle = 'symptom_warning'
+    }
+
+    if (row['flu']=='yes') {
+      var fluStyle = 'symptom_warning'
+    }
+
+    if (row['other']=='yes') {
+      var otherStyle = 'symptom_warning'
+    }
+
+    html.push(`<table style="text-align: center;">
+                <tr>
+                  <th>Temperature</th>
+                  <th>Dry Cough</th>
+                  <th>Breathing Problems</th>
+                  <th>Flu Symptoms</th>
+                  <th>Risky Contacts</th>
+                </tr>
+                <tr>
+                <td style="border-radius:0.375rem;" class="`+tempStyle+`">`+ row['temp'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+coughStyle+`">`+ row['cough'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+breathStyle+`">`+ row['breath'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+fluStyle+`">`+ row['flu'] +`</td>
+                <td style="border-radius:0.375rem;"class="`+otherStyle+`">`+ row['other'] +`</td>
+                </tr></table>`)
+
+    return html.join('')
+  }
+
+  $table = $('#LocationVisits').bootstrapTable({
+      exportOptions: { ignoreColumn: [0,5] }
+  });
+
 </script>
 
 
