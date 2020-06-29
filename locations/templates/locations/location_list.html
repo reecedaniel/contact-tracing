@@ -39,11 +39,6 @@
           box-shadow: 2px 0px 2px 0 rgba(0, 0, 0, 0.2);
         }
 
-      .shepherd-button{
-        background: #2C3C5B;
-        color:white;
-      }
-
 
 </style>
 <!-- Header -->
@@ -163,8 +158,6 @@
 {% block javascripts %}
 
 
-<script type="text/javascript" src="/static/assets/js/plugins/shepherd/js/custom.js"></script>
-
 
 <script type="text/javascript">
 
@@ -198,7 +191,8 @@ $(function() {
 
   tour.addStep({
     id: 'allLocations',
-    text: 'Here you will be able to see a list of your locations. Open a location form and leave it at the entrance to your premise for visitors to log their visit. Will you also be able to access and manage location specific data',
+    title: 'A form and detailed data for each of your locations',
+    text: 'Here you will be able to see a list of your locations. Open a location form and leave it at the entrance to your premise for visitors to log their visit. You will also be able to access and manage location specific data.',
     attachTo: {
       element: '#allLocations',
       on: 'bottom'

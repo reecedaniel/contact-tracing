@@ -4,7 +4,7 @@
 {% block stylesheets %}
 
 <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
-<link rel="stylesheet" href="static/assets/js/plugins/shepherd/css/shepherd.css">
+
 
 <style>
   .hidden{
@@ -15,11 +15,6 @@
   }
   .symptom_ok{
     background-color:rgba(147, 231, 195, 0.5)
-  }
-
-  .shepherd-button{
-    background: #2C3C5B;
-    color:white;
   }
 
 </style>
@@ -295,7 +290,7 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script type="text/javascript" src="/static/assets/js/plugins/shepherd/js/custom.js"></script>
+
 
 <script type="text/javascript">
 
@@ -361,7 +356,8 @@ $(function() {
 
   tour.addStep({
     id: 'metrics',
-    text: 'Welcome to your Dashboard! See a list of useful metrics across all your locations',
+    title: 'Welcome to your Dashboard!',
+    text: 'See a list of useful metrics across all your locations',
     attachTo: {
       element: '#metrics',
       on: 'bottom'
@@ -372,15 +368,13 @@ $(function() {
         text: 'Next',
         action: tour.next
       },
-      {
-        text: 'Cancel',
-        action: tour.complete
-      }
-    ]
+    ],
+    cancelIcon: {enabled:true,label:'cancel'}
   });
 
   tour.addStep({
     id: 'allVisits',
+    title: 'Interact with your visitors',
     text: 'Retrieve a list of all visits across your locations. You can export the data to excel or pdf. Send your visitors an SMS or email.',
     attachTo: {
       element: '#AllVisits',
@@ -396,11 +390,8 @@ $(function() {
             tour.next
             }
       },
-      {
-        text: 'Cancel',
-        action: tour.complete
-      }
-    ]
+    ],
+    cancelIcon: {enabled:true,label:'cancel'}
   });
 
   $('#topnav').prepend(`<button id="tour" class="btn btn-icon btn-secondary" type="button">
