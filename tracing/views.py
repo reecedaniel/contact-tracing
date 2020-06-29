@@ -14,15 +14,17 @@ from django.core.mail import send_mail,EmailMessage
 from django.contrib import messages
 import datetime
 from django.db.models import Min, Max, Sum
+from django.contrib.auth import logout
 
 
 # Create your views here.
-@login_required
+# @login_required
 def VisitLog(request,pk):
     form_cell = VisitForm()
     form_visitor = VisitorForm()
     form_cell.fields['location'].initial = pk
     location = Location.objects.get(pk=pk)
+    logout(request)
     # visitors = Visitor.objects.all()
 
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor,"location":location.name})
@@ -91,12 +93,6 @@ def checkCell(request):
             return JsonResponse({"valid":True}, status = 200)
 
     return JsonResponse({}, status = 400)
-
-def Dashboard(request):
-    return render(request,'dashboard.html')
-
-def Tables(request):
-    return render(request,'tables.html')
 
 
 def formSubmit(request):

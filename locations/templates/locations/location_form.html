@@ -9,21 +9,31 @@
   </div> -->
   {% if not form.instance.pk %}
   <div class="modal-body">
-      <h1>{{location.id}}</h1>
-      <form method="post" action="{% url 'locations:create_location' %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" class="btn btn-primary" value="Submit">
-    </form>
+      {% if user.location_set.count < user.profile.max_locations %}
+          <h1>{{location.id}}</h1>
+          <form method="post" action="{% url 'locations:create_location' %}">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+      {% else %}
+      <div class="alert alert-warning" role="alert">
+        <span class="alert-icon"><i class="fa fa-exclamation-circle"></i></span>
+        <span class="alert-text"><strong>Locations Exceeded: </strong> Please <a href="mailto:support@gettrail.app?subject=UPGRADE">upgrade</a> to add more locations</span>
+      </div>
+      {% endif %}
   </div>
   {% else %}
   <div class="modal-body">
+
       <!-- <h1>{{ location_pk }}</h1> -->
       <form id="updateform" method="post" action="{% url 'locations:update_location' location_pk %}">
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" class="btn btn-primary" value="Submit">
+
     </form>
+
   </div>
   {% endif %}
   <!-- <div class="modal-body">

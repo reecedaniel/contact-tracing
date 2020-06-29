@@ -57,13 +57,13 @@ class LocationList(LoginRequiredMixin,ListView):
 class LocationDetailView(LoginRequiredMixin,UpdateView):
     context_object_name = 'location_detail'
     model = models.Location
-    template_name = 'locations/location_detail.html'
+    template_name = 'locations/location_detail-old.html'
     form_class=LocationUpdateForm
 
     #automatically creates context dictionary school (i.e. model name in lower case)
 
 class LocationDetail(LoginRequiredMixin,SingleObjectMixin,ListView):
-    template_name = 'locations/location_detail2.html'
+    template_name = 'locations/location_detail.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=models.Location.objects.filter(user=self.request.user))

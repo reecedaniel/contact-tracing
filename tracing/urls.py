@@ -10,6 +10,4 @@ urlpatterns = [
     path('get/ajax/',views.checkCell,name='check_cell'),
     path('visitorlist/',views.VisitorListView.as_view(),name='visitor_list'),
     path('',views.VisitListView.as_view(),name='visits'),
-    path('dashboard/',views.Dashboard,name="dashboard"),
-    path('tables/',views.Tables,name="tables"),
 ]
