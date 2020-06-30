@@ -67,9 +67,9 @@
                   // console.log("Created")
                   console.log(response["message"])
                   $(window).scrollTop(0);
-                  $("#div_message").append("<div class='alert alert-success' id='success-alert'>"+response["message"]+"</div>");
-                  $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
-                    $("#success-alert").slideUp(500);
+                  $("#div_message").append("<div class='alert alert-success' id='log-alert'>"+response["message"]+"</div>");
+                  $("#log-alert").fadeTo(2000, 500).slideUp(500, function() {
+                    $("#log-alert").slideUp(500);
                   });
                   $("#access-form").trigger('reset');
                   console.log('form submitted')

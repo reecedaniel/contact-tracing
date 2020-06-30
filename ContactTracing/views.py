@@ -9,7 +9,7 @@ class ThanksPage(TemplateView):
 
 
 class index(TemplateView):
-    template_name = 'accounts/login.html'
+    template_name = 'base.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:

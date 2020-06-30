@@ -104,7 +104,7 @@
             </a>
           </li>-->
           <li class="nav-item">
-            <a class="nav-link " href="{% url 'accounts:subscription' username=request.user.username %}">
+            <a class="nav-link " href="{% url 'accounts:subscription' email=request.user.email %}">
               <i class="ni ni-single-02 text-green"></i> Account
             </a>
           </li>
