@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load dashboard_tags %}
-{% block title %} Tables {% endblock title %}
+{% block title %} Dashboard {% endblock title %}
 {% block stylesheets %}
 
 <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
@@ -146,7 +146,7 @@
               data-export-types="['xml','csv','txt','excel']"
               data-export-data-type = "all"
               data-click-to-select="true"
-              data-filter-control="true"
+              data-filter-control="false"
               data-detail-view="true"
               data-detail-view-by-click="true"
               data-detail-view-icon="false"

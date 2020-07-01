@@ -20,7 +20,7 @@ class CreateLocation(LoginRequiredMixin,SuccessMessageMixin,CreateView):
     template_name = 'locations/location_form.html'
     form_class = LocationCreateForm
     # success_message = 'Success: Location was created.'
-    # success_url = reverse_lazy('locations:locations')
+    success_url = reverse_lazy('locations:locations')
 
     def form_valid(self,form):
         self.save_user(form)

@@ -3,8 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
-from accounts.models import User
+from locations.models import Location
+from accounts.models import User,Profile
 
 
 class UserCreationForm(forms.ModelForm):
@@ -52,6 +52,13 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+class LocationsInline(admin.TabularInline):
+    model = Location
+
+class UserProfileInline(admin.StackedInline):
+    model = Profile
+
+
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
@@ -78,6 +85,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+    inlines = [
+            LocationsInline,
+            UserProfileInline,
+        ]
 
 
 # Now register the new UserAdmin...
