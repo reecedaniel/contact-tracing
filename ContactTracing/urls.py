@@ -18,8 +18,9 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path('',views.index.as_view(),name='index'),
-    path('exit-redirect/',views.index.as_view(),name='exit_form'),
+    path('',views.landing.as_view(),name='landing'),
+    path('login/',views.login.as_view(),name='login'),
+    path('exit-redirect/',views.login.as_view(),name='exit_form'),
     # path('post/ajax/',views.postVisitor,name='post_visitor'),
     # path('get/ajax/',views.checkCell,name='check_cell'),
     # path('visitorlist/',views.VisitorListView.as_view(),name='visitor_list'),

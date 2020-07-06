@@ -8,10 +8,15 @@ class ThanksPage(TemplateView):
     template_name = 'thanks.html'
 
 
-class index(TemplateView):
+class login(TemplateView):
     template_name = 'accounts/login.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse("tracing:visits"))
         return super().get(request, *args, **kwargs)
+
+
+class landing(TemplateView):
+    template_name = 'landing.html'
+    
