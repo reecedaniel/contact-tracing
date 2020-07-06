@@ -1,7 +1,186 @@
-{% extends 'base.html' %}
+{% extends "layouts/base-fullscreen.html" %}
 
 {% block content %}
 
-<h2>Welcome to Home Page</h2>
+
+<style id="__jsx-3985566527">
+  .pricing a {
+    color: inherit;
+    -webkit-text-decoration: underline;
+    text-decoration: underline;
+  }
+  table.pricing-table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+  }
+  table.pricing-table th,
+  table.pricing-table td {
+    width: 26%;
+  }
+  table.pricing-table th:first-child,
+  table.pricing-table td:first-child {
+    width: 48%;
+  }
+
+  .bg-default {
+    background-color: #f5f5f5 !important;
+  }
+
+  .fill-default {
+    fill: #f5f5f5;
+  }
+</style>
+
+<body class="index-page">
+  <!-- Extra details for Live View on GitHub Pages -->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <!-- Signup Button -->
+  <div class="container mt--8 pb-4">
+    <div class="header-body text-center mb-7">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-6">
+          <button type="button" id="start-button" class="btn btn-danger btn-lg">Start for Free</button>
+          <script type="text/javascript">
+            document.getElementById("start-button").onclick = function () {
+                location.href = "/accounts/signup/";
+            };
+        </script>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mockup -->
+  <div class="container pb-2">
+    <div class="header-body text-center mb-7">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-6">
+          <img src="/static/assets/img/trail-mock.png" class="img-fluid" alt="Responsive image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Header -->
+  <div class="container ">
+    <div class="header-body text-center mb-7">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-6">
+          <h2 class="h2 display-1" style="font-size: 1.4rem;">Start today for Free, or scale up with our Pro and Enterprise plans</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="jsx-3985566527 position-relative zindex-small flexbox flexbox-justify-center flexbox-wrap">
+    <div class="flexbox flexbox-column flexbox-align-start text-align-left margin-horizontal-medium margin-bottom-large padding-larger radius-normal shadow--normal background-white shade-05" style="width: 260px; margin-top: 24px;">
+      <h3 class="font-family-title regular-title">Free</h3>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-bottom-large font-weight-medium">Start logging your visitors today</div>
+      <div>
+        <div class="margin-bottom-large">
+          <div>
+            <span class="font-weight-normal padding-right-small font-family-title" style="vertical-align: 1.4em; font-size: 20px;">N$</span>
+            <span class="font-weight-medium" style="font-size: 64px; height: 64px;"><span class="font-family-title">0</span></span>
+          </div>
+          <div style="font-size: 13px; line-height: 19px;" class="font-weight-medium margin-top-normal"></div>
+        </div>
+        <div class="margin-bottom-normal">
+          <a href="{% url 'accounts:signup' %}" class="" rel="noopener noreferrer" target="">
+            <button
+              class="btn btn-primary"
+              id="pricing-free-signup"
+            >
+              Sign up
+            </button>
+          </a>
+        </div>
+      </div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">1 free location</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">1000 visitor entries per month</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Real-time dashboard</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Unlimited report exports</div>
+    </div>
+    <div class="flexbox flexbox-column flexbox-align-start text-align-left margin-horizontal-medium margin-bottom-large padding-larger radius-normal shadow--normal background-primary white" style="width: 280px; margin-top: 0;">
+      <h3 class="font-family-title regular-title text-white">Pro</h3>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-bottom-large font-weight-medium">Go pro for multiple locations</div>
+      <div>
+        <div class="margin-bottom-large">
+          <div>
+            <span class="font-weight-normal padding-right-small font-family-title" style="vertical-align: 1.4em; font-size: 20px;">N$</span>
+            <span class="font-weight-medium" style="font-size: 64px; height: 64px;">
+              <span class="font-family-title">
+                399<span style="font-size: 0.4em;">.<!-- -->99</span>
+              </span>
+            </span>
+          </div>
+          <div style="font-size: 13px; line-height: 19px;" class="font-weight-medium opacity-large margin-top-normal">Per month</div>
+        </div>
+        <div class="margin-bottom-normal">
+          <a href="mailto:support@gettrail.app?subject=Trail App: Pro Plan" target="_blank" class="" rel="noopener noreferrer" target="">
+            <button
+              class="btn btn-secondary"
+              id="pricing-standard-signup"
+            >
+              Get started
+            </button>
+          </a>
+        </div>
+      </div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">10 locations</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Unlimited visitor entries per month</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Real-time dashboard</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Unlimited report exports</div>
+    </div>
+    <div class="flexbox flexbox-column flexbox-align-start text-align-left margin-horizontal-medium margin-bottom-large padding-larger radius-normal shadow--normal background-shade-05 white" style="width: 260px; margin-top: 24px;  background-color: #0ac5a8;">
+      <h3 class="font-family-title regular-title" style="color: white;">Enterprise</h3>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-bottom-large font-weight-medium">Customised features and reporting</div>
+      <div>
+        <div class="margin-bottom-large">
+          <svg fill="currentColor" preserveAspectRatio="xMidYMid meet" height="32" width="32" viewBox="0 0 32 32" style="vertical-align: middle;">
+            <g fill="currentColor">
+              <g>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M31.9998 13.9999C31.9998 6.26799 25.7318 0 17.9998 0H13.9998C6.26788 0 -0.000101089 6.26799 -0.000101089 13.9999V29.9999C-0.000101089 30.693 0.358801 31.3368 0.948433 31.7012C1.53806 32.0656 2.27434 32.0987 2.89431 31.7887L10.472 27.9999H17.9998C25.7318 27.9999 31.9998 21.7319 31.9998 13.9999ZM17.9998 3.99998C23.5226 3.99998 27.9998 8.47711 27.9998 13.9999C27.9998 19.5228 23.5226 23.9999 17.9998 23.9999H10.472C9.85101 23.9999 9.23856 24.1445 8.68314 24.4222L3.99988 26.7638V13.9999C3.99988 8.47711 8.47701 3.99998 13.9998 3.99998H17.9998Z"
+                  fill="currentColor"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12 13.9999C12 15.1045 11.1046 15.9999 9.99999 15.9999C8.89543 15.9999 8 15.1045 8 13.9999C8 12.8954 8.89543 11.9999 9.99999 11.9999C11.1046 11.9999 12 12.8954 12 13.9999ZM17.9999 13.9999C17.9999 15.1045 17.1045 15.9999 15.9999 15.9999C14.8954 15.9999 13.9999 15.1045 13.9999 13.9999C13.9999 12.8954 14.8954 11.9999 15.9999 11.9999C17.1045 11.9999 17.9999 12.8954 17.9999 13.9999ZM21.9999 15.9999C23.1045 15.9999 23.9999 15.1045 23.9999 13.9999C23.9999 12.8954 23.1045 11.9999 21.9999 11.9999C20.8953 11.9999 19.9999 12.8954 19.9999 13.9999C19.9999 15.1045 20.8953 15.9999 21.9999 15.9999Z"
+                  fill="currentColor"
+                ></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="margin-bottom-normal">
+          <a href="mailto:support@gettrail.app?subject=Trail App: Enterprise Plan" target="_blank" class="" rel="noopener noreferrer" >
+            <button
+              class="btn btn-secondary"
+              id="pricing-enterprise-signup"
+            >
+              Let's talk
+            </button>
+          </a>
+        </div>
+      </div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Unlimited locations</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Unlimited visitor entries</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Feature customisation</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Reporting customisation</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Priority Support</div>
+      <div style="font-size: 14px; line-height: 22px;" class="margin-top-normal">Custom contract &amp; invoicing</div>
+    </div>
+  </div>
+<hr>
+  <!-- End Pricing -->
+
 
 {% endblock %}

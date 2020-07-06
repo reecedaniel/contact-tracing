@@ -4,12 +4,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
 
-class ThanksPage(TemplateView):
-    template_name = 'thanks.html'
-
-
 class index(TemplateView):
-    template_name = 'base.html'
+    template_name = 'index.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
