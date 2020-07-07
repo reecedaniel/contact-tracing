@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'import_export',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -143,3 +144,5 @@ EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL='no-reply@gettrail.app'
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

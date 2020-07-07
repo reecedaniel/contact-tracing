@@ -37,7 +37,7 @@ class ToggleWidget(forms.widgets.CheckboxInput):
 
 class VisitForm(forms.Form):
     # BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
-    cellphone = forms.CharField(label='Cellphone', max_length=10,widget=forms.NumberInput)
+    cellphone = forms.CharField(label='Cellphone',min_length=10,max_length=10,widget=forms.NumberInput)
     location = forms.CharField(label='Location',max_length=200,widget=forms.HiddenInput())
     temperature = forms.DecimalField(max_digits=3,decimal_places=1)
     dry_cough = forms.BooleanField(label="Do you have a dry cough?",required=False,widget=ToggleWidget)

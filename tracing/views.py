@@ -15,6 +15,9 @@ from django.contrib import messages
 import datetime
 from django.db.models import Min, Max, Sum
 from django.contrib.auth import logout
+from django.http import HttpResponse
+from .resources import VisitorResource,VisitResource
+from tablib import Dataset
 
 
 # Create your views here.
@@ -143,6 +146,31 @@ def formSubmit(request):
             # errors = access_record.errors.as_JSON()
             return JsonResponse({"error": access_record.errors}, status=400)
     return render(request,'home.html',{"form_cell":form_cell,"form_visitor":form_visitor})
+
+
+# def export(request):
+#     visit_resource = VisitResource()
+#     dataset = visit_resource.export()
+#     response = HttpResponse(dataset.csv, content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="visits.csv"'
+#     return response
+#
+# def simple_upload(request):
+#     if request.method == 'POST':
+#         visit_resource = VisitResource()
+#         dataset = Dataset()
+#         new_visits = request.FILES['myfile']
+#
+#         imported_data = dataset.load(new_visits.read())
+#         result = visit_resource.import_data(dataset, dry_run=True)  # Test the data import
+#
+#         if not result.has_errors():
+#             visit_resource.import_data(dataset, dry_run=False)  # Actually import now
+#
+#     return render(request, 'core/simple_upload.html')
+
+
+
 
 
 # class CreateVistorView(CreateView):
