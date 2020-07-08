@@ -16,3 +16,4 @@ class VisitResource(resources.ModelResource):
     class Meta:
         model = Visit
         use_bulk = True
+        batch_size = 1000
