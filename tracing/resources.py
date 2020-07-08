@@ -17,3 +17,4 @@ class VisitResource(resources.ModelResource):
         model = Visit
         use_bulk = True
         batch_size = 1000
+        force_init_instance = True
