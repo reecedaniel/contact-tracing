@@ -11,7 +11,7 @@ class AccessRecordAdmin(ImportExportMixin,admin.ModelAdmin):
         AccessRecordsInline,
     ]
     resource_class = VisitorResource
-
+    search_fields = ('name', 'cellphone')
 
 class VisitAdmin(ImportExportModelAdmin):
     resource_class = VisitResource
