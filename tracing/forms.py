@@ -6,7 +6,7 @@ from crispy_forms.layout import Layout,Field
 
 class VisitorForm(forms.Form):
     name = forms.CharField(label='Your name', max_length=100)
-    visitor_email = forms.EmailField(label='Email',max_length=254)
+    visitor_email = forms.EmailField(label='Email',max_length=254,required=False)
 
     def __init__(self, *args, **kwargs):
         super(VisitorForm, self).__init__(*args, **kwargs)

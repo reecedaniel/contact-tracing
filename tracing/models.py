@@ -7,7 +7,7 @@ from django.utils import timezone
 class Visitor(models.Model):
     name = models.CharField(max_length=264,unique=False)
     cellphone = models.CharField(max_length=10,unique=True)
-    visitor_email = models.EmailField(max_length=254)
+    visitor_email = models.EmailField(max_length=254,blank=True)
 
     def __str__(self):
         return self.name
