@@ -15,3 +15,4 @@ class VisitResource(resources.ModelResource):
 
     class Meta:
         model = Visit
+        use_bulk = True
