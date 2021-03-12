@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['.herokuapp.com','.localhost','.gettrail.app']
+ALLOWED_HOSTS = ['.herokuapp.com','.localhost','.gettrail.app','127.0.0.1']
 
 
 # Application definition
@@ -146,3 +146,8 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL='no-reply@gettrail.app'
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+#SSL Settings
+if DEBUG == False:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
